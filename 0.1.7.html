@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto & Stock ROI Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Sora', sans-serif;
+      background-color: #0e0e0e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: gold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .tab-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .tab {
+      padding: 10px 25px;
+      border-radius: 8px;
+      background-color: #1a1a1a;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .tab.active {
+      background-color: gold;
+      color: #000;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+      box-sizing: border-box;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      background-color: #2a2a2a;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: gold;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      color: #000;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .output {
+      margin-top: 20px;
+      background-color: #2a2a2a;
+      padding: 15px;
+      border-radius: 6px;
+      line-height: 1.8;
+      word-wrap: break-word;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 450px) {
+      body {
+        padding: 20px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 ROI Prediction Calculator</h1>
+
+  <div class="tab-container">
+    <div class="tab active" id="cryptoTab" onclick="switchTab('crypto')">Crypto</div>
+    <div class="tab" id="stockTab" onclick="switchTab('stocks')">Stocks</div>
+  </div>
+
+  <!-- Crypto Form -->
+  <div class="card" id="cryptoCard">
+    <div class="form-group">
+      <input type="text" id="cryptoName" placeholder="Crypto Name (e.g., BTC)" />
+    </div>
+    <div class="form-group">
+      <input type="number" id="cryptoInvest" placeholder="Amount Invested ($)" />
+    </div>
+    <div class="form-group">
+      <input type="number" id="cryptoCurrent" placeholder="Current Price ($)" />
+    </div>
+    <div class="form-group">
+      <input type="number" id="cryptoFuture" placeholder="Predicted Price ($)" />
+    </div>
+    <button onclick="calculateCrypto()">Calculate</button>
+    <div class="output" id="cryptoOutput"></div>
+  </div>
+
+  <!-- Stock Form -->
+  <div class="card hidden" id="stockCard">
+    <div class="form-group">
+      <input type="text" id="stockName" placeholder="Stock Name (e.g., AAPL)" />
+    </div>
+    <div class="form-group">
+      <input type="number" id="stockInvest" placeholder="Amount Invested ($)" />
+    </div>
+    <div class="form-group">
+      <input type="number" id="stockCurrent" placeholder="Current Price ($)" />
+    </div>
+    <div class="form-group">
+      <input type="number" id="stockFuture" placeholder="Predicted Price ($)" />
+    </div>
+    <button onclick="calculateStock()">Calculate</button>
+    <div class="output" id="stockOutput"></div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.getElementById('cryptoCard').classList.add('hidden');
+      document.getElementById('stockCard').classList.add('hidden');
+      document.getElementById('cryptoTab').classList.remove('active');
+      document.getElementById('stockTab').classList.remove('active');
+
+      if (tab === 'crypto') {
+        document.getElementById('cryptoCard').classList.remove('hidden');
+        document.getElementById('cryptoTab').classList.add('active');
+      } else {
+        document.getElementById('stockCard').classList.remove('hidden');
+        document.getElementById('stockTab').classList.add('active');
+      }
+    }
+
+    function calculateCrypto() {
+      const name = document.getElementById("cryptoName").value || "Crypto";
+      const invest = parseFloat(document.getElementById("cryptoInvest").value);
+      const current = parseFloat(document.getElementById("cryptoCurrent").value);
+      const future = parseFloat(document.getElementById("cryptoFuture").value);
+
+      if (isNaN(invest) || isNaN(current) || isNaN(future)) {
+        alert("Please fill in all fields correctly.");
+        return;
+      }
+
+      const units = invest / current;
+      const value = units * future;
+      const profit = value - invest;
+      const roi = (profit / invest) * 100;
+
+      document.getElementById("cryptoOutput").innerHTML = `
+        <div style="font-size: 16px; line-height: 1.8;">
+          📌 <strong style="color:#ffd700;">Crypto Name:</strong> <b>${name.toUpperCase()}</b><br>
+          💵 <strong>Investment:</strong> $${invest.toFixed(2)}<br>
+          📉 <strong>Current Price:</strong> $${current.toFixed(2)}<br>
+          📈 <strong>Predicted Price:</strong> $${future.toFixed(2)}<br><br>
+
+          🧮 <strong>You will own:</strong><br>
+          <span style="font-size: 20px; color:#0f0;"><b>${units.toFixed(6)} ${name.toUpperCase()}</b></span><br><br>
+
+          🔮 <strong>Future Value:</strong><br>
+          <span style="font-size: 22px; color: #ffd700;"><b>$${value.toFixed(2)}</b></span><br><br>
+
+          💰 <strong>Profit:</strong><br>
+          <span style="font-size: 22px; color:${profit >= 0 ? '#00ff00' : '#ff5050'};">
+            <b>$${profit.toFixed(2)} (${roi.toFixed(2)}%)</b>
+          </span>
+        </div>
+      `;
+    }
+
+    function calculateStock() {
+      const name = document.getElementById("stockName").value || "Stock";
+      const invest = parseFloat(document.getElementById("stockInvest").value);
+      const current = parseFloat(document.getElementById("stockCurrent").value);
+      const future = parseFloat(document.getElementById("stockFuture").value);
+
+      if (isNaN(invest) || isNaN(current) || isNaN(future)) {
+        alert("Please fill in all fields correctly.");
+        return;
+      }
+
+      const shares = invest / current;
+      const value = shares * future;
+      const profit = value - invest;
+      const roi = (profit / invest) * 100;
+
+      document.getElementById("stockOutput").innerHTML = `
+        <div style="font-size: 16px; line-height: 1.8;">
+          📌 <strong style="color:#ffd700;">Stock Name:</strong> <b>${name.toUpperCase()}</b><br>
+          💵 <strong>Investment:</strong> $${invest.toFixed(2)}<br>
+          📉 <strong>Current Price:</strong> $${current.toFixed(2)}<br>
+          📈 <strong>Predicted Price:</strong> $${future.toFixed(2)}<br><br>
+
+          🧮 <strong>You will own:</strong><br>
+          <span style="font-size: 20px; color:#0f0;"><b>${shares.toFixed(4)} Shares</b></span><br><br>
+
+          🔮 <strong>Future Value:</strong><br>
+          <span style="font-size: 22px; color: #ffd700;"><b>$${value.toFixed(2)}</b></span><br><br>
+
+          💰 <strong>Profit:</strong><br>
+          <span style="font-size: 22px; color:${profit >= 0 ? '#00ff00' : '#ff5050'};">
+            <b>$${profit.toFixed(2)} (${roi.toFixed(2)}%)</b>
+          </span>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
