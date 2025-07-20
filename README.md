@@ -1,1 +1,1 @@
-# ROI-Prediction-Calculator---Stocks-and-Crypto
+# ROI Prediction Calculator - Stocks and Crypto
